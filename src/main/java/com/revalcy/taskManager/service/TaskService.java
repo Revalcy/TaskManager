@@ -41,4 +41,26 @@ public class TaskService {
         nextId++;
         return newTask;
     }
+
+    public Task updateTask(Long id, Task updateTask){
+        for(Task task : tasks){
+            if(task.getId().equals(id)){
+                task.setTitle(updateTask.getTitle());
+                task.setDescription(updateTask.getDescription());
+                task.setCompleted(updateTask.isCompleted());
+
+                return task;
+            }
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not Found");
+    }
+
+    public void deleteTask(Long id){
+        boolean removed = tasks.removeIf(task -> task.getId().equals(id));
+
+        if(!removed){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not Found");
+        }
+    }
 }
