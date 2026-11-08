@@ -3,10 +3,10 @@ package com.revalcy.taskManager.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.revalcy.taskManager.dto.UpdateTaskRequest;
+import com.revalcy.taskManager.exception.TaskNotFoundException;
 import com.revalcy.taskManager.model.Task;
 
 @Service 
@@ -21,8 +21,19 @@ public class TaskService {
         this.tasks.add(new Task(3L, "Exercise", "Go Swimming"));
     }
 
-    public List<Task> getAllTasks(){
-        return tasks;
+    public List<Task> getAllTasks(Boolean completed){
+        List<Task> filterTask = new ArrayList<>();
+        if(completed == null){
+            return tasks;
+        } else {
+            for(Task task : tasks){
+                if(task.isCompleted() == completed){
+                    filterTask.add(task);
+                }
+            }
+        }
+
+        return filterTask;
     }
 
     public Task getTaskById(Long id){
@@ -32,7 +43,7 @@ public class TaskService {
             }
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not Found");
+        throw new TaskNotFoundException(id);
     }
 
     public Task createTask(String title, String description){
@@ -42,25 +53,25 @@ public class TaskService {
         return newTask;
     }
 
-    public Task updateTask(Long id, Task updateTask){
+    public Task updateTask(Long id, UpdateTaskRequest request){
         for(Task task : tasks){
             if(task.getId().equals(id)){
-                task.setTitle(updateTask.getTitle());
-                task.setDescription(updateTask.getDescription());
-                task.setCompleted(updateTask.isCompleted());
+                task.setTitle(request.getTitle());
+                task.setDescription(request.getDescription());
+                task.setCompleted(request.getCompleted());
 
                 return task;
             }
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not Found");
+        throw new TaskNotFoundException(id);
     }
 
     public void deleteTask(Long id){
         boolean removed = tasks.removeIf(task -> task.getId().equals(id));
 
         if(!removed){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not Found");
+            throw new TaskNotFoundException(id);
         }
     }
 }

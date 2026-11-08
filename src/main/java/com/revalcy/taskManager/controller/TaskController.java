@@ -10,12 +10,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revalcy.taskManager.dto.CreateTaskRequest;
+import com.revalcy.taskManager.dto.UpdateTaskRequest;
 import com.revalcy.taskManager.model.Task;
 import com.revalcy.taskManager.service.TaskService;
 
+import jakarta.validation.Valid;
+
 @RestController 
+@RequestMapping("/tasks")
 public class TaskController {
     
     private final TaskService taskService;
@@ -29,28 +36,35 @@ public class TaskController {
         return "Hello, Task Manager!";
     }
 
-    @GetMapping("/tasks")
-    public List<Task> getAllTasks(){
-        return taskService.getAllTasks();
+    @GetMapping
+    public ResponseEntity<List<Task>> getAllTasks(
+        @RequestParam(required = false) Boolean completed
+    ){
+        List<Task> allTasks = taskService.getAllTasks(completed);
+        return ResponseEntity.status(HttpStatus.OK).body(allTasks);
     }
 
-    @GetMapping("/tasks/{id}")
-    public Task getTaskById(@PathVariable Long id){
-        return taskService.getTaskById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id){
+        Task getTask = taskService.getTaskById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(getTask);
     }
 
-    @PostMapping("/tasks")
-    public ResponseEntity<Task> createTask(@RequestBody Task task){
-        Task newTask = taskService.createTask(task.getTitle(), task.getDescription());
+    @PostMapping
+    public ResponseEntity<Task> createTask(@Valid @RequestBody CreateTaskRequest request){
+        Task newTask = taskService.createTask(request.getTitle(), request.getDescription());
         return ResponseEntity.status(HttpStatus.CREATED).body(newTask);
     }
 
-    @PutMapping("/tasks/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task updateTask){
-        return taskService.updateTask(id, updateTask);
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> updateTask(
+        @PathVariable Long id, 
+        @Valid @RequestBody UpdateTaskRequest request){
+        Task updateNewTask = taskService.updateTask(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(updateNewTask);
     }
 
-    @DeleteMapping("/tasks/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id){
         taskService.deleteTask(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

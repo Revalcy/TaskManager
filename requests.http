@@ -2,7 +2,10 @@
 GET http://localhost:8080/tasks
 
 ### Get task by ID
-GET http://localhost:8080/tasks/2
+GET http://localhost:8080/tasks/4
+
+### Get task by completed
+GET http://localhost:8080/tasks?completed=true
 
 ### Create a new task
 POST http://localhost:8080/tasks
@@ -13,19 +16,49 @@ Content-Type: application/json
     "description": "Practice ResponseEntity"
 }
 
+
+### Create a new task with DTO
+POST http://localhost:8080/tasks 
+Content-Type: application/json 
+
+{   
+    "title": "Learn Validation", 
+    "description": "Add @Valid to controller" 
+}
+
+### Create a new task with DTO with a empty title
+POST http://localhost:8080/tasks 
+Content-Type: application/json 
+
+{ 
+    "title": " ", 
+    "description": "This should fail" 
+    
+}
+
 ### Update an existing task
 PUT http://localhost:8080/tasks/2
 Content-Type: application/json
 
 {
     "title" : "Study Spring Boot",
-    "description" : "Learn PUT requests and REST APIs",
+    "description" : "Practice ResponseEntity",
     "completed" : "true"
+}
+
+### Update an existing task with DTO validation
+PUT http://localhost:8080/tasks/1 
+Content-Type: application/json 
+
+{ 
+    "title": "Study Advanced Java &amp; Spring Boot", 
+    "description": "Master DTOs and Validation",
+    "completed" : true
 }
 
 
 ### Delete an existing task
-DELETE http://localhost:8080/tasks/1
+DELETE http://localhost:8080/tasks/999
 
 ### Verify deletion
 GET http://localhost:8080/tasks
