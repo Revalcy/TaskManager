@@ -1,64 +1,48 @@
-### Get all tasks
-GET http://localhost:8080/tasks
-
-### Get task by ID
-GET http://localhost:8080/tasks/4
-
-### Get task by completed
-GET http://localhost:8080/tasks?completed=true
-
-### Create a new task
-POST http://localhost:8080/tasks
-Content-Type: application/json
-
-{
-    "title": "Learn Spring Boot",
-    "description": "Practice ResponseEntity"
-}
-
-
-### Create a new task with DTO
-POST http://localhost:8080/tasks 
-Content-Type: application/json 
-
-{   
-    "title": "Learn Validation", 
-    "description": "Add @Valid to controller" 
-}
-
-### Create a new task with DTO with a empty title
+### 1. Create Task #1 (POST) 
 POST http://localhost:8080/tasks 
 Content-Type: application/json 
 
 { 
-    "title": " ", 
-    "description": "This should fail" 
-    
-}
+    "title": "Master Spring Data JPA", 
+    "description": "Connect TaskManager to H2 in-memory database" 
+} 
 
-### Update an existing task
-PUT http://localhost:8080/tasks/2
-Content-Type: application/json
+### 2. Create Task #2 (POST) 
+POST http://localhost:8080/tasks 
+Content-Type: application/json 
 
-{
-    "title" : "Study Spring Boot",
-    "description" : "Practice ResponseEntity",
-    "completed" : "true"
-}
+{ 
+    "title": "Write Unit Tests with JUnit 5", 
+    "description": "Test TaskService using Mockito" 
+} 
 
-### Update an existing task with DTO validation
+### 3. Fetch All Tasks (GET) 
+GET http://localhost:8080/tasks 
+
+### 4. Update Task #1 to Completed (PUT) 
 PUT http://localhost:8080/tasks/1 
 Content-Type: application/json 
 
 { 
-    "title": "Study Advanced Java &amp; Spring Boot", 
-    "description": "Master DTOs and Validation",
-    "completed" : true
+    "title": "Master Spring Data JPA & H2 Database", 
+    "description": "Successfully connected and mapped database entity!", 
+    "completed": true 
 }
 
+### 5. Filter Only Incomplete Tasks (GET) 
+GET http://localhost:8080/tasks?completed=false 
 
-### Delete an existing task
-DELETE http://localhost:8080/tasks/999
+### 6. Test Input Validation (Should return 400 Bad Request) 
+POST http://localhost:8080/tasks 
+Content-Type: application/json 
 
-### Verify deletion
-GET http://localhost:8080/tasks
+{
+    "title": " ", 
+    "description": "Blank title check" 
+} 
+
+### 7. Delete Task #1 (DELETE) 
+DELETE http://localhost:8080/tasks/1 
+
+### 8. Verify Non-Existent Task (Should return 404 Not Found) 
+GET http://localhost:8080/tasks/999
